@@ -1,0 +1,65 @@
+data:
+  raw_path: "data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv"
+  processed_path: "data/processed/churn_processed.csv"
+  test_size: 0.2
+  random_state: 42
+
+features:
+  target: "Churn"
+  drop_cols: ["customerID"]
+  categorical_cols:
+    - gender
+    - Partner
+    - Dependents
+    - PhoneService
+    - MultipleLines
+    - InternetService
+    - OnlineSecurity
+    - OnlineBackup
+    - DeviceProtection
+    - TechSupport
+    - StreamingTV
+    - StreamingMovies
+    - Contract
+    - PaperlessBilling
+    - PaymentMethod
+  numerical_cols:
+    - tenure
+    - MonthlyCharges
+    - TotalCharges
+
+model:
+  algorithm: "xgboost"  # options: logistic_regression, random_forest, xgboost, lightgbm
+  hyperparameters:
+    xgboost:
+      n_estimators: 300
+      max_depth: 5
+      learning_rate: 0.05
+      subsample: 0.8
+      colsample_bytree: 0.8
+      scale_pos_weight: 2.7  # handles class imbalance
+      random_state: 42
+    lightgbm:
+      n_estimators: 300
+      max_depth: 5
+      learning_rate: 0.05
+      subsample: 0.8
+      random_state: 42
+    random_forest:
+      n_estimators: 200
+      max_depth: 10
+      random_state: 42
+    logistic_regression:
+      C: 1.0
+      max_iter: 1000
+      random_state: 42
+
+evaluation:
+  threshold: 0.4  # tuned for better recall on churners
+  cv_folds: 5
+  metrics:
+    - roc_auc
+    - f1
+    - precision
+    - recall
+    - average_precision
